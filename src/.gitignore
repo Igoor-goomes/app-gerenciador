@@ -1,30 +1,24 @@
-# Dependências
 /vendor/
 node_modules/
 
-# Storage e cache
 /storage/*
 !/storage/app/public
 /storage/framework/*
 /bootstrap/cache/*
 
-# Logs
 /storage/logs/*
 *.log
 
-# Arquivos sensíveis
 .env
 .env.*
 .env.local
 .env.production
 .env.staging
 
-# Build do front (caso use Vite)
 public/hot
 public/storage
 public/build
 
-# Arquivos de cache e debug
 .phpunit.result.cache
 Homestead.yaml
 Homestead.json
@@ -32,7 +26,6 @@ npm-debug.log
 yarn-error.log
 composer.lock
 
-# IDE e sistema
 .idea/
 .vscode/
 *.swp
@@ -42,13 +35,11 @@ composer.lock
 *.DS_Store
 Thumbs.db
 
-# Docker e volumes
 postgres-data/
 docker-compose.override.yml
 .env.docker
 .env.example.local
 
-# Arquivos extras
 *.pid
 *.seed
 *.sql
@@ -56,5 +47,4 @@ docker-compose.override.yml
 *.tar.gz
 *.txt
 
-# Cache Laravel
 bootstrap/cache/*.php
