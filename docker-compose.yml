@@ -1,0 +1,47 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app-gerenciador-app
+    working_dir: /var/www/html
+    volumes:
+      - ./src:/var/www/html
+    ports:
+      - "8000:80"
+    depends_on:
+      - db
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+
+      DB_CONNECTION: pgsql
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: appgerenciador
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+    networks:
+      - gerenciador_net
+
+  db:
+    image: postgres:16-alpine
+    container_name: app-gerenciador-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: appgerenciador
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - gerenciador_net
+
+volumes:
+  postgres-data:
+
+networks:
+  gerenciador_net:
+    driver: bridge
