@@ -9,6 +9,7 @@ services:
       - ./src:/var/www/html
     ports:
       - "8000:80"
+    user: "${UID:-1000}:${GID:-1000}"
     depends_on:
       - db
     environment:
