@@ -1,0 +1,4 @@
+# Local dev scripts (keep only locally)
+/start-dev.sh
+/stop-dev.sh
+
