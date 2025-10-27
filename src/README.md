@@ -7,60 +7,45 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+## Sobre o Projeto
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Este projeto é um desafio técnico em Laravel focado em autenticação e organização de camadas. Ele expõe dois fluxos de acesso:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Autenticação Web (sessão/cookies) para navegação no gerenciador.
+- Autenticação via API REST (Bearer Token com Laravel Sanctum) para consumo programático.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Stack e Versões
+- PHP: ^8.2
+- Laravel: ^11.31
+- Sanctum: ^4.2 (tokens Bearer)
+- Front-end: Blade + Bootstrap 5.3 (tema dark) + jQuery 3.7
+- Banco de dados: SQLite (ambiente de desenvolvimento)
 
-## Learning Laravel
+## Funcionalidades
+- Web (guard `web`)
+  - Tela de login em `/gerenciador/signin` (apenas convidados — middleware `guest`).
+  - Home autenticada em `/gerenciador/home` (middleware `auth`).
+  - Logout em `/gerenciador/logout` (POST), com invalidação de sessão e token CSRF.
+  - Modal “Criar usuário” na tela de login chamando a API de registro.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- API (guard Sanctum)
+  - `POST /api/v1/registrar`: cria usuário (validações e mensagens em português).
+  - `POST /api/v1/login`: autentica e retorna token Bearer + dados do usuário.
+  - `GET /api/v1/dados`: retorna dados do usuário autenticado (envie `Authorization: Bearer <token>`).
+  - `POST /api/v1/logout`: revoga tokens do usuário autenticado.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Organização
+- Controllers Web: `app/Http/Controllers/GerenciadorController.php`
+- Controllers API: `app/Http/Controllers/Api/AutenticadorController.php`
+- Serviço de autenticação/usuário: `app/Services/AutenticadorService.php`
+- Views: `resources/views` (layout dark, tela de login com modal e home)
+- JS público: `public/js/signin.js` (lógica da modal de registro com jQuery)
+- Rotas: `routes/web.php` (prefixo `/gerenciador`) e `routes/api.php` (prefixo `/api/v1`)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Ambiente
+- Desenvolvido para execução local (Laravel 11) com SQLite. As rotas Web usam CSRF/middleware padrão; as rotas API usam Sanctum (sem CSRF, com Bearer Token).
 
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Próximos Passos (Ideias)
+- CRUD com DataTables (jQuery) e endpoints paginados.
+- Extração das mensagens para `resources/lang` para i18n.
+- Testes de feature para fluxos Web e API.
