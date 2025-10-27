@@ -88,6 +88,14 @@ class AutenticadorController extends Controller
             'name'     => 'required|string|max:255',
             'email'    => 'required|email|unique:users,email',
             'password' => 'required|string|min:6|confirmed'
+        ], [
+            'email.unique'   => 'E-mail informado já existe, por favor verifique.',
+            'email.email'    => 'Informe um e-mail válido.',
+            'email.required' => 'O campo e-mail é obrigatório.',
+            'name.required'  => 'O campo nome é obrigatório.',
+            'password.required' => 'O campo senha é obrigatório.',
+            'password.min'      => 'A senha deve conter no mínimo :min caracteres.',
+            'password.confirmed'=> 'As senhas não conferem.'
         ]);
 
         $usuario = $this->autenticador->registrarUsuario($dadosCadastro);
