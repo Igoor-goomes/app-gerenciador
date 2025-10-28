@@ -9,7 +9,6 @@ Route::prefix('v1')->group(function () {
     // Login
     Route::post('/login', [AutenticadorController::class, 'login']);
     Route::post('/registrar', [AutenticadorController::class, 'registrar']);
-    Route::post('/registrar', [AutenticadorController::class, 'registrar']);
 
     // Tokens
     Route::middleware('auth:sanctum')->group(function () {

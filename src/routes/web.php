@@ -3,10 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GerenciadorController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
+Route::get('/', fn() => to_route('signin'));
 Route::prefix('gerenciador')->group(function () {
     // Rotas públicas
     Route::middleware('guest')->group(function () {

@@ -101,5 +101,7 @@
   </div>
   </div>
 
+@section('scripts')
 <script src="/js/signin.js"></script>
+@endsection
 @endsection

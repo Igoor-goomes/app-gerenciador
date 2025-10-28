@@ -5,13 +5,16 @@ $(function () {
   const $signinAlert = $('#signinAlert');
   const $modal = $('#modalRegistrar');
 
-  function clearErrorsAndForm() {
+  function clearErrors() {
     $errorsBox.addClass('d-none').empty();
+  }
+
+  function resetForm() {
     $form.trigger('reset');
   }
 
   async function registrar() {
-    clearErrorsAndForm();
+    clearErrors();
 
     const payload = {
       name: $('#reg_nome').val()?.trim() || '',
@@ -32,7 +35,8 @@ $(function () {
       // Sucesso: fechar modal, preencher email e alertar
       const modalInstance = bootstrap.Modal.getOrCreateInstance($modal[0]);
       modalInstance.hide();
-      clearErrorsAndForm();
+      clearErrors();
+      resetForm();
 
       const $emailInput = $('#email');
       $emailInput.val(payload.email).trigger('focus');
@@ -55,6 +59,6 @@ $(function () {
   }
 
   $btnRegistrar.on('click', registrar);
-  $modal.on('show.bs.modal', clearErrorsAndForm);
-  $modal.on('hidden.bs.modal', clearErrorsAndForm);
+  $modal.on('show.bs.modal', clearErrors);
+  $modal.on('hidden.bs.modal', function () { clearErrors(); resetForm(); });
 });
