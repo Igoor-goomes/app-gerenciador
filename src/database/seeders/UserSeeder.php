@@ -20,5 +20,7 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('secrect@2025'),
             ]
         );
+
+        User::factory(1)->create();
     }
 }
