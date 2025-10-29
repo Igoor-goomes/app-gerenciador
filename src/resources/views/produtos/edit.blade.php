@@ -21,15 +21,19 @@
     </div>
 
     <div class="row g-3">
-      <div class="col-sm-6">
-        <label class="form-label">Preço</label>
-        <input type="number" step="0.01" min="0" name="preco" value="{{ old('preco', $produto->preco) }}" class="form-control @error('preco') is-invalid @enderror" required>
+      <div class="col-sm-4">
+        <label class="form-label">Preço Unitário</label>
+        <input type="text" name="preco" value="{{ old('preco', number_format((float)($produto->preco_unitario ?? $produto->preco), 2, ',', '.')) }}" class="form-control @error('preco') is-invalid @enderror" placeholder="R$ 0,00" required>
         @error('preco')<div class="invalid-feedback">{{ $message }}</div>@enderror
       </div>
-      <div class="col-sm-6">
+      <div class="col-sm-4">
         <label class="form-label">Quantidade em Estoque</label>
         <input type="number" step="1" min="0" name="quantidade_estoque" value="{{ old('quantidade_estoque', $produto->quantidade_estoque) }}" class="form-control @error('quantidade_estoque') is-invalid @enderror" required>
         @error('quantidade_estoque')<div class="invalid-feedback">{{ $message }}</div>@enderror
+      </div>
+      <div class="col-sm-4">
+        <label class="form-label">Total</label>
+        <input type="text" class="form-control" value="R$ {{ number_format((float) ($produto->preco_total), 2, ',', '.') }}" readonly>
       </div>
     </div>
 
@@ -42,24 +46,4 @@
 @endsection
 @section('scripts')
 <script src="/js/listaProdutos.js"></script>
-<script>
-  $(function(){
-    const $preco = $("input[name='preco']");
-    if (typeof applyMoneyMask === 'function') {
-      applyMoneyMask($preco);
-      // formata valor inicial caso venha como número
-      const val = $preco.val();
-      if (val && typeof formatMoneyBRFromDigits === 'function') {
-        const digits = String(Math.round(parseFloat(val) * 100));
-        $preco.val(formatMoneyBRFromDigits(digits));
-      }
-    }
-    $("form").on('submit', function(){
-      if (typeof parseMoneyToNumber === 'function') {
-        const $p = $(this).find("input[name='preco']");
-        $p.val(parseMoneyToNumber($p.val()));
-      }
-    });
-  });
-</script>
 @endsection

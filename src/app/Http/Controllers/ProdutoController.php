@@ -35,7 +35,16 @@ class ProdutoController extends Controller
 
     public function store(ProdutoStoreRequest $request)
     {
-        Produto::create($request->validated());
+        $data = $request->validated();
+        // Ensure unit and total consistency
+        $unit = $data['preco_unitario'] ?? $data['preco'] ?? null;
+        $qty  = $data['quantidade_estoque'] ?? 0;
+        if ($unit !== null && $unit !== '') {
+            $data['preco'] = $unit;
+            $data['preco_unitario'] = $unit;
+            $data['preco_total'] = round(((float)$unit) * ((float)$qty), 2);
+        }
+        Produto::create($data);
         return redirect()->route('produtos.index')->with('success', 'Produto criado com sucesso.');
     }
 
@@ -51,7 +60,15 @@ class ProdutoController extends Controller
 
     public function update(ProdutoUpdateRequest $request, Produto $produto)
     {
-        $produto->update($request->validated());
+        $data = $request->validated();
+        $unit = $data['preco_unitario'] ?? $data['preco'] ?? null;
+        $qty  = $data['quantidade_estoque'] ?? $produto->quantidade_estoque;
+        if ($unit !== null && $unit !== '') {
+            $data['preco'] = $unit;
+            $data['preco_unitario'] = $unit;
+            $data['preco_total'] = round(((float)$unit) * ((float)$qty), 2);
+        }
+        $produto->update($data);
         return redirect()->route('produtos.index')->with('success', 'Produto atualizado com sucesso.');
     }
 
@@ -105,7 +122,7 @@ class ProdutoController extends Controller
                 $dir = ($ord['dir'] ?? 'asc') === 'desc' ? 'desc' : 'asc';
                 $colName = $columns[$colIndex]['data'] ?? $columns[$colIndex]['name'] ?? null;
                 // Mapear possíveis nomes de coluna
-                $allowed = ['nome','preco','quantidade_estoque','id'];
+                $allowed = ['nome','descricao','preco','quantidade_estoque','id'];
                 if ($colName && in_array($colName, $allowed, true)) {
                     $query->orderBy($colName, $dir);
                 }
@@ -118,7 +135,9 @@ class ProdutoController extends Controller
         $data = $query->skip($start)->take($length)->get()->map(function ($p) {
             return [
                 'nome' => $p->nome,
+                'descricao' => $p->descricao ?: '-',
                 'preco' => 'R$ ' . number_format((float) $p->preco, 2, ',', '.'),
+                'total' => 'R$ ' . number_format((float) $p->preco_total, 2, ',', '.'),
                 'quantidade_estoque' => $p->quantidade_estoque,
                 'acoes' => view('produtos.partials.acoes', ['p' => $p])->render(),
             ];

@@ -7,45 +7,34 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## Sobre o Projeto
+## Sobre este diretório (`src`)
 
-Este projeto é um desafio técnico em Laravel focado em autenticação e organização de camadas. Ele expõe dois fluxos de acesso:
+Esta pasta contém o projeto Laravel (aplicação) em si. Para instruções completas de execução, veja o README na raiz do repositório. Abaixo, um resumo rápido do sistema e um mini‑manual de uso.
 
-- Autenticação Web (sessão/cookies) para navegação no gerenciador.
-- Autenticação via API REST (Bearer Token com Laravel Sanctum) para consumo programático.
+### Resumo do Sistema
+- Gestão de produtos com:
+  - Preço unitário (com máscara BRL) e total calculado (qtd × unitário)
+  - Categorias múltiplas e atributos flexíveis (pares chave/valor)
+  - Listagem com filtros e DataTables server‑side (PT‑BR)
+  - Fluxo de criação rápido via modal na Home, além de telas Create/Edit
+  - UX com toasts/confirm (SweetAlert2) e recarga automática de tabela
 
-## Stack e Versões
-- PHP: ^8.2
-- Laravel: ^11.31
-- Sanctum: ^4.2 (tokens Bearer)
-- Front-end: Blade + Bootstrap 5.3 (tema dark) + jQuery 3.7
-- Banco de dados: SQLite (ambiente de desenvolvimento)
+### Como mexer no sistema (atalhos)
+- Home (Estoque): filtros por nome, preço mínimo/máximo e estoque; botão “Cadastro Novo Produto” abre a modal de criação.
+- Criar/Editar: campos de Nome, Descrição, Preço Unitário, Quantidade, Categorias e Atributos. Botões “+ Adicionar” permitem múltiplas entradas.
+- Listagem: colunas Nome, Descrição, Preço Unitário, Total, Estoque e Ações. A descrição é truncada com tooltip para manter legibilidade.
+- Exclusão: confirmação bonita com SweetAlert2; ao confirmar, a tabela recarrega sem refresh da página.
 
-## Funcionalidades
-- Web (guard `web`)
-  - Tela de login em `/gerenciador/signin` (apenas convidados — middleware `guest`).
-  - Home autenticada em `/gerenciador/home` (middleware `auth`).
-  - Logout em `/gerenciador/logout` (POST), com invalidação de sessão e token CSRF.
-  - Modal “Criar usuário” na tela de login chamando a API de registro.
+### Onde ficam as coisas
+- JS de UI/UX centralizado em `public/js/listaProdutos.js` (máscaras, toasts, confirmação, DataTables e modal)
+- Views Blade em `resources/views` (layouts, páginas e parciais)
+- Regras de validação/normalização em `app/Http/Requests`
+- Controllers em `app/Http/Controllers`
+- Modelo `Produto` com casts e total calculado em `app/Models/Produto.php`
 
-- API (guard Sanctum)
-  - `POST /api/v1/registrar`: cria usuário (validações e mensagens em português).
-  - `POST /api/v1/login`: autentica e retorna token Bearer + dados do usuário.
-  - `GET /api/v1/dados`: retorna dados do usuário autenticado (envie `Authorization: Bearer <token>`).
-  - `POST /api/v1/logout`: revoga tokens do usuário autenticado.
-
-## Organização
-- Controllers Web: `app/Http/Controllers/GerenciadorController.php`
-- Controllers API: `app/Http/Controllers/Api/AutenticadorController.php`
-- Serviço de autenticação/usuário: `app/Services/AutenticadorService.php`
-- Views: `resources/views` (layout dark, tela de login com modal e home)
-- JS público: `public/js/signin.js` (lógica da modal de registro com jQuery)
-- Rotas: `routes/web.php` (prefixo `/gerenciador`) e `routes/api.php` (prefixo `/api/v1`)
-
-## Ambiente
-- Desenvolvido para execução local (Laravel 11) com SQLite. As rotas Web usam CSRF/middleware padrão; as rotas API usam Sanctum (sem CSRF, com Bearer Token).
-
-## Próximos Passos (Ideias)
-- CRUD com DataTables (jQuery) e endpoints paginados.
-- Extração das mensagens para `resources/lang` para i18n.
-- Testes de feature para fluxos Web e API.
+### Rodar localmente (resumo)
+1. `composer install` e configurar `.env`
+2. `php artisan key:generate`
+3. `php artisan migrate --seed`
+4. `php artisan serve` (app disponível em http://127.0.0.1:8000)
+5. (Opcional) `npm install && npm run dev` para Vite em dev

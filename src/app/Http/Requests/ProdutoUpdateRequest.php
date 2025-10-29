@@ -30,9 +30,12 @@ class ProdutoUpdateRequest extends FormRequest
         return [
             'nome'               => [$sometimes, 'string', 'max:255', Rule::unique('produtos', 'nome')->ignore($produtoId)],
             'descricao'          => ['nullable', 'string'],
-            'preco'              => [$sometimes, 'numeric', 'min:0'],
+            'preco'              => ['nullable', 'numeric', 'min:0'],
+            'preco_unitario'     => ['nullable', 'numeric', 'min:0'],
+            'preco_total'        => ['nullable', 'numeric', 'min:0'],
             'quantidade_estoque' => [$sometimes, 'integer', 'min:0'],
             'categoria'          => ['nullable', 'array'],
+            'categoria.*'        => ['string','max:100'],
             'atributo'           => ['nullable', 'array'],
         ];
     }
@@ -57,6 +60,8 @@ class ProdutoUpdateRequest extends FormRequest
             'nome'               => 'nome',
             'descricao'          => 'descrição',
             'preco'              => 'preço',
+            'preco_unitario'     => 'preço unitário',
+            'preco_total'        => 'preço total',
             'quantidade_estoque' => 'quantidade em estoque',
             'categoria'          => 'categoria',
             'atributo'           => 'atributo',
@@ -66,17 +71,35 @@ class ProdutoUpdateRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $preco = $this->input('preco');
-        if (is_string($preco)) {
-            $preco = str_replace(['.', ','], ['', '.'], preg_replace('/\s+/', '', $preco));
+        $preco_unit = $this->input('preco_unitario');
+        $qty = (float) $this->input('quantidade_estoque', $this->route('produto')->quantidade_estoque ?? 0);
+        foreach (['preco','preco_unitario'] as $k) {
+            $v = $this->input($k);
+            if (is_string($v)) {
+                $$k = str_replace(['.', ','], ['', '.'], preg_replace('/\s+/', '', $v));
+            }
+        }
+        $unit = $preco_unit !== null && $preco_unit !== '' ? $preco_unit : $preco;
+        $total = $unit !== null && $unit !== '' ? (float)$unit * $qty : null;
+
+        // Normalize atributo if sent as JSON string
+        $atributo = $this->input('atributo');
+        if (is_string($atributo)) {
+            $decoded = json_decode($atributo, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $atributo = $decoded;
+            }
         }
 
         $this->merge([
             'nome'               => trim((string) $this->input('nome')),
             'descricao'          => $this->filled('descricao') ? trim((string) $this->input('descricao')) : null,
-            'preco'              => $preco,
+            'preco'              => $unit,
+            'preco_unitario'     => $unit,
+            'preco_total'        => $total,
             'quantidade_estoque' => $this->input('quantidade_estoque'),
             'categoria'          => $this->input('categoria') ?? null,
-            'atributo'           => $this->input('atributo') ?? null,
+            'atributo'           => $atributo ?? null,
         ]);
     }
 }

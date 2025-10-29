@@ -41,7 +41,9 @@
         <thead>
           <tr>
             <th data-data="nome">Nome</th>
-            <th data-data="preco" class="text-end">Preço</th>
+            <th data-data="descricao">Descrição</th>
+            <th data-data="preco" class="text-end">Preço Unitário</th>
+            <th data-data="total" class="text-end">Total</th>
             <th data-data="quantidade_estoque" class="text-end">Estoque</th>
             <th data-data="acoes" class="text-end" style="width: 180px;">Ações</th>
           </tr>
@@ -76,7 +78,16 @@
       },
       columns: [
         { data: 'nome', name: 'nome' },
+        { data: 'descricao', name: 'descricao', render: function(data, type){
+            if (type === 'display' || type === 'filter') {
+              const text = data || '-';
+              return '<span class="dt-desc-ellipsis" title="'+ $('<div>').text(text).html() +'">'+ $('<div>').text(text).html() +'</span>';
+            }
+            return data;
+          }
+        },
         { data: 'preco', name: 'preco', className: 'text-end' },
+        { data: 'total', name: 'total', className: 'text-end' },
         { data: 'quantidade_estoque', name: 'quantidade_estoque', className: 'text-end' },
         { data: 'acoes', name: 'acoes', orderable: false, searchable: false, className: 'text-end' },
       ],

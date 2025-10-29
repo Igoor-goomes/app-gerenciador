@@ -5,8 +5,8 @@
 
     <div class="container py-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h1 class="h4 m-0">Estoque</h1> <a href="#" class="btn btn-primary" data-bs-toggle="modal"
-                data-bs-target="#modalNovoProduto">Cadastro Novo Produto</a>
+            <h1 class="h4 m-0">Estoque</h1>
+            <button type="button" id="btnAbrirModalNovoProduto" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNovoProduto">Cadastro Novo Produto</button>
         </div>
         <form method="GET" class="mb-3">
             <div class="row g-2 align-items-end">
@@ -30,7 +30,9 @@
                     <thead>
                         <tr>
                             <th data-data="nome">Nome</th>
-                            <th data-data="preco" class="text-end">Preço</th>
+                            <th data-data="descricao">Descrição</th>
+                            <th data-data="preco" class="text-end">Preço Unitário</th>
+                            <th data-data="total" class="text-end">Total</th>
                             <th data-data="quantidade_estoque" class="text-end">Estoque</th>
                             <th data-data="acoes" class="text-end" style="width: 180px;">Ações</th>
                         </tr>
@@ -38,36 +40,68 @@
                     <tbody></tbody>
                 </table>
             </div>
-        </div> <!-- Modal Novo Produto -->
-        <div class="modal fade" id="modalNovoProduto" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content bg-body border-secondary-subtle">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Novo Produto</h5> <button type="button" class="btn-close"
-                            data-bs-dismiss="modal"></button>
+        </div>
+
+        <!-- Modal Novo Produto -->
+        <div class="modal fade" id="modalNovoProduto" tabindex="-1" aria-labelledby="modalNovoProdutoLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content bg-body border-secondary-subtle">
+              <div class="modal-header">
+                <h5 class="modal-title" id="modalNovoProdutoLabel">Novo Produto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <form id="formNovoProduto" method="POST" action="{{ route('produtos.store') }}">
+                @csrf
+                <div class="modal-body">
+                  <div id="novoProdutoErrors" class="alert alert-danger d-none"></div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Nome</label>
+                    <input type="text" name="nome" class="form-control" required>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Descrição</label>
+                    <textarea name="descricao" rows="3" class="form-control"></textarea>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Categorias</label>
+                    <div id="categorias-wrapper">
+                      <input type="text" name="categoria[]" class="form-control mb-2" placeholder="Ex.: Eletrônicos">
                     </div>
-                    <form id="formNovoProduto" method="POST" action="{{ route('produtos.store') }}"> @csrf <div
-                            class="modal-body">
-                            <div id="novoProdutoErrors" class="alert alert-danger d-none"></div>
-                            <div class="mb-3"> <label class="form-label">Nome</label> <input type="text" name="nome"
-                                    class="form-control" required> </div>
-                            <div class="mb-3"> <label class="form-label">Descrição</label>
-                                <textarea name="descricao" rows="3" class="form-control"></textarea>
-                            </div>
-                            <div class="row g-3">
-                                <div class="col-sm-6"> <label class="form-label">Preço</label> <input type="number"
-                                        step="0.01" min="0" name="preco" class="form-control" required> </div>
-                                <div class="col-sm-6"> <label class="form-label">Quantidade em Estoque</label> <input
-                                        type="number" step="1" min="0" name="quantidade_estoque"
-                                        class="form-control" required> </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer"> <button type="button" class="btn btn-outline-secondary"
-                                data-bs-dismiss="modal">Cancelar</button> <button type="submit"
-                                class="btn btn-primary">Salvar</button> </div>
-                    </form>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-action="add-categoria" data-target="#categorias-wrapper">+ Adicionar categoria</button>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Atributos</label>
+                    <div id="atributos-wrapper">
+                      <div class="row g-2 align-items-center mb-2">
+                        <div class="col"><input type="text" class="form-control" name="atributo[chave][]" placeholder="Chave (ex.: marca)"></div>
+                        <div class="col"><input type="text" class="form-control" name="atributo[valor][]" placeholder="Valor (ex.: ACME)"></div>
+                      </div>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-action="add-atributo" data-target="#atributos-wrapper">+ Adicionar atributo</button>
+                  </div>
+
+                  <div class="row g-3">
+                    <div class="col-sm-6">
+                      <label class="form-label">Preço Unitário</label>
+                      <input type="text" name="preco" class="form-control" placeholder="R$ 0,00" autocomplete="off" required>
+                    </div>
+                    <div class="col-sm-6">
+                      <label class="form-label">Quantidade em Estoque</label>
+                      <input type="number" step="1" min="0" name="quantidade_estoque" class="form-control" required>
+                    </div>
+                  </div>
                 </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                  <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+              </form>
             </div>
+          </div>
         </div>
 </div> @endsection
 @section('scripts')

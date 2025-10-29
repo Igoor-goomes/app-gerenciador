@@ -9,6 +9,9 @@
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
         html, body { height: 100%; }
+        .dt-desc-ellipsis { max-width: 420px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .mot-grid .mot-item { font-size: .95rem; line-height: 1.25rem; margin-bottom: .5rem; }
+        .mot-grid .bi { vertical-align: -0.125em; }
     </style>
 </head>
 <body class="bg-body text-body">
@@ -47,9 +50,20 @@
         crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
     <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <div class="toast-container position-fixed bottom-0 end-0 p-3" id="toastArea"></div>
     <script>
+      // Global helpers for pretty confirm and toasts
+      window.AppUI = {
+        confirm: async (title, text, confirmText='Sim', cancelText='Cancelar') => {
+          const res = await Swal.fire({ title, text, icon: 'warning', showCancelButton: true, confirmButtonText: confirmText, cancelButtonText: cancelText, confirmButtonColor: '#d33' });
+          return res.isConfirmed;
+        },
+        toast: (msg, type='success') => {
+          Swal.fire({ toast: true, position: 'top-end', showConfirmButton: false, timer: 2500, timerProgressBar: true, icon: type, title: msg });
+        }
+      };
       // Session lifetime warning/refresh (10 minutes default via .env)
       (function(){
         const LIFETIME_MIN = {{ (int) (env('SESSION_LIFETIME', 10)) }}; // minutes
