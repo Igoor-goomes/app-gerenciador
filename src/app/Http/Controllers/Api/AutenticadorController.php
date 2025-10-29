@@ -81,6 +81,18 @@ class AutenticadorController extends Controller
         ], Response::HTTP_OK);
     }
 
+    public function refresh(Request $request)
+    {
+        $user = $request->user();
+        // Revoga o token atual e cria um novo
+        $user->currentAccessToken()?->delete();
+        $novo = $user->createToken('auth_token')->plainTextToken;
+        return response()->json([
+            'message'    => 'Token renovado com sucesso!',
+            'token'      => $novo,
+            'token_type' => 'Bearer',
+        ], Response::HTTP_OK);
+    }
 
     public function registrar(Request $request)
     {

@@ -13,9 +13,15 @@ class Produto extends Model
     protected $table = 'produtos';
     protected $primaryKey = 'id';
     protected $fillable = ['nome', 'descricao', 'preco', 'quantidade_estoque', 'categoria','atributo'];
+    protected $attributes = ['categoria' => null, 'atributo' => null];
     protected $casts = [
         'categoria' => 'array',
         'atributo'  => 'array',
         'preco'     => 'decimal:2'
     ];
+
+    public function scopeNome($query, $termo)
+    {
+        return $query->where('nome', 'like', "%{$termo}%");  
+    }
 }
