@@ -37,4 +37,5 @@ Esta pasta contém o projeto Laravel (aplicação) em si. Para instruções comp
 2. `php artisan key:generate`
 3. `php artisan migrate --seed`
 4. `php artisan serve` (app disponível em http://127.0.0.1:8000)
-5. (Opcional) `npm install && npm run dev` para Vite em dev
+5. (Caso de erro 500) verificar as permissões e diretórios do `storage/framework` e do `bootstrap/cache`
+6. (Opcional) `npm install && npm run dev` para Vite em dev
