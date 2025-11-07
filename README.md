@@ -1,69 +1,168 @@
-# Gerenciador de Produtos
+<h1 align="center">🧮 Gerenciador de Produtos</h1>
 
-Aplicação web para cadastro, listagem e gerenciamento de produtos, com foco em clareza de dados (preço unitário x total), categorias múltiplas e atributos flexíveis. Projeto feito em Laravel (PHP 8+), Blade/Bootstrap/jQuery no front, DataTables server-side, PostgreSQL, rodando em Docker/WSL.
+<p align="center">
+  Aplicação web para cadastro, listagem e gerenciamento de produtos, com foco em clareza de dados, múltiplas categorias e flexibilidade de atributos.<br>
+  Desenvolvido em <b>Laravel (PHP 8+)</b> + <b>PostgreSQL</b> + <b>Docker/WSL2</b>.
+</p>
 
-## Principais Recursos
-- Cadastro rápido por modal na Home e telas dedicadas de criar/editar
-- Preço unitário com máscara BRL e total calculado (qtd × unitário)
-- Filtros por nome, faixa de preço e estoque com DataTables server-side
-- Categorias múltiplas e atributos chave/valor com casts JSON do Eloquent
-- UX com toasts e confirmações (SweetAlert2) e tabelas com colunas localizadas em PT‑BR
+<p align="center">
+  <img src="https://img.shields.io/badge/PHP-8.3-blue?logo=php" alt="PHP">
+  <img src="https://img.shields.io/badge/Laravel-11.x-red?logo=laravel" alt="Laravel">
+  <img src="https://img.shields.io/badge/PostgreSQL-15-blue?logo=postgresql" alt="PostgreSQL">
+  <img src="https://img.shields.io/badge/Docker-ready-2496ED?logo=docker" alt="Docker">
+  <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
+</p>
 
-## Como Executar
-1) Clonar o repositório
-```
+---
+
+## ✅ Checklist de Configuração Rápida
+
+| Etapa | Status |
+|-------|--------|
+| 🐙 Clonar o repositório | ✅ |
+| 🐋 Subir containers com Docker | ✅ |
+| 🧱 Instalar dependências (`composer install`) | ✅ |
+| ⚙️ Configurar `.env` e gerar `APP_KEY` | ✅ |
+| 🗃️ Rodar migrations e seeds | ✅ |
+| 🧩 Corrigir permissões do `storage` (se necessário) | ✅ |
+| 💻 Acessar em [http://localhost:8000](http://localhost:8000) | ✅ |
+
+---
+
+## 🧩 Principais Recursos
+
+- Cadastro rápido via modal e telas dedicadas  
+- Preço unitário (BRL) e total calculado (qtd × unitário)  
+- Filtros dinâmicos com **DataTables Server-Side**  
+- Categorias múltiplas e atributos flexíveis (JSON)  
+- Feedback visual com **SweetAlert2** e **toasts**  
+- Tabelas localizadas em PT-BR  
+
+---
+
+## 🐳 Como Executar (via Docker)
+
+### 1️⃣ Clonar o repositório
+```bash
 git clone <URL_DO_REPOSITORIO>
 cd <PASTA_DO_REPOSITORIO>
 ```
 
-2) Subir infraestrutura com Docker
-```
-docker-compose up -d
+### 2️⃣ Subir a infraestrutura
+> Use `docker compose` (sem hífen) — o padrão moderno do Docker.
+```bash
+docker compose up -d
 ```
 
-3) Instalar dependências PHP e preparar o app (dentro da pasta `src`)
+### 3️⃣ Entrar no container da aplicação
+```bash
+docker exec -it app bash
 ```
-cd src
+
+### 4️⃣ Instalar dependências PHP e preparar o `.env`
+```bash
 composer install
 cp .env.example .env
 php artisan key:generate
 ```
 
-4) Configurar banco (variáveis do .env)
-- Use o serviço do docker-compose (PostgreSQL) apontando `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`.
+### 5️⃣ Configurar banco no `.env`
+Use o serviço PostgreSQL do Docker:
 
-5) Rodar migrations e seeds
 ```
+DB_CONNECTION=pgsql
+DB_HOST=db
+DB_PORT=5432
+DB_DATABASE=gerenciador
+DB_USERNAME=postgres
+DB_PASSWORD=postgres
+```
+
+### 6️⃣ Rodar migrations e seeds
+```bash
 php artisan migrate --seed
 ```
 
-6) Rodar o servidor
+### 7️⃣ Acessar no navegador
 ```
-php artisan serve
+http://localhost:8000
 ```
-A aplicação estará acessível em http://127.0.0.1:8000.
 
-7) (Opcional) Front em modo dev com Vite
-```
+---
+
+## 🎨 Desenvolvimento Front-End (opcional)
+
+Para recompilar CSS/JS no modo dev:
+```bash
 npm install
 npm run dev
 ```
 
-## Account/Autenticação
-- Tela de Sign In disponível em `/signin` (ou navegação). Há seeder de usuário para acesso inicial quando aplicável.
+---
 
-## Estrutura e Notas
-- Backend: Laravel + PHP 8+
-- Frontend: Blade + Bootstrap 5 + jQuery/DataTables
-- Banco: PostgreSQL (migrations e seeds)
-- Máscara BRL, toasts e confirmações via JS em `src/public/js/listaProdutos.js`
-- DataTables com localização PT‑BR e colunas: Nome, Descrição, Preço Unitário, Total, Estoque, Ações
+## 🔐 Autenticação
 
-## Fluxo de Desenvolvimento
-- Alterações de UI/JS centralizadas em `src/public/js/listaProdutos.js` (evitar JS inline nas views)
-- Requests validam e normalizam preço/categorias/atributos
-- Controller `ProdutoController@datatable` fornece os dados da tabela (server-side)
+- Tela de login em `/signin`  
+- Usuário inicial pode ser criado via **seed**  
+- Exemplo de login:
+  ```
+  Email: admin@example.com
+  Senha: password
+  ```
 
-## Licença
-Uso educacional/demonstração. Ajuste conforme necessário.
+---
 
+## ⚙️ Estrutura e Notas
+
+- **Backend:** Laravel + PHP 8+  
+- **Frontend:** Blade + Bootstrap 5 + jQuery/DataTables  
+- **Banco:** PostgreSQL (migrations e seeds)  
+- **JS:** Lógica em `public/js/listaProdutos.js`  
+- **Tabelas:** Localização PT-BR e colunas: Nome, Descrição, Preço Unitário, Total, Estoque, Ações  
+
+---
+
+## 🧰 Solução de Problemas Comuns
+
+### ❗ Erro: “Please provide a valid cache path”
+Ocorre quando o Laravel não encontra (ou não tem permissão) nas pastas de cache/views.
+
+**Causa:** `storage/framework/views` ausente ou sem permissão.
+
+**Como corrigir (dentro do container):**
+```bash
+docker exec -it app bash
+
+mkdir -p storage/framework/{cache,data,sessions,testing,views}
+mkdir -p bootstrap/cache
+
+chown -R www-data:www-data storage bootstrap/cache
+chmod -R ug+rwx storage bootstrap/cache
+
+php artisan optimize:clear
+```
+
+Se necessário, adicione ao `.env`:
+```
+VIEW_COMPILED_PATH=/var/www/html/storage/framework/views
+```
+
+💡 Dica: use `docker compose stop` (não `down`) para manter permissões entre sessões.
+
+---
+
+## 🧱 Fluxo de Desenvolvimento
+
+- Alterações de UI/JS → `public/js/listaProdutos.js`  
+- Controllers organizam toda a lógica de CRUD e DataTables  
+- Requests validam e normalizam preço/categorias/atributos  
+- Controller principal: `ProdutoController@datatable`  
+
+---
+
+## 🪪 Licença
+
+Uso educacional e de demonstração.  
+---
+
+<p align="center">Feito com ❤️ por <b>Igor Gomes</b> — Desenvolvedor PHP/Laravel</p>
